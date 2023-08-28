@@ -24,6 +24,11 @@ function recordInputs(event: FormEvent){
     mensagem
   }
   refDB.push(dados)
+  
+  setNome('')
+  setEmail('')
+  setTelefone('')
+  setMensagem('')
 }
 
 
@@ -40,10 +45,10 @@ function recordInputs(event: FormEvent){
       </div>
       <div className='flex justify-center items-center h-[100vh]'>
         <form onSubmit={recordInputs} className='w-[560px] mr-[1rem] text-center'>
-            <input className='w-[90%] p-[1rem] border border-black m-[0.5rem] mt-5' type='text' placeholder='Nome*' onChange={event => setNome(event.target.value)} autoFocus required></input>
-            <input className='w-[90%] p-[1rem] border border-black m-[0.5rem]' type='email' placeholder='Email*'onChange={event => setEmail(event.target.value)} required></input>
-            <input className='w-[90%] p-[1rem] border border-black m-[0.5rem]' type='tel' placeholder='Telefone'onChange={event => setTelefone(event.target.value)}></input>
-            <textarea className='resize-none w-[90%] p-[1rem] border border-black m-[0.5rem]' placeholder='Observação'onChange={event => setMensagem(event.target.value)}></textarea>
+            <input className='w-[90%] p-[1rem] border border-black m-[0.5rem] mt-5' type='text' placeholder='Nome*' value={nome} onChange={event => setNome(event.target.value)} autoFocus required></input>
+            <input className='w-[90%] p-[1rem] border border-black m-[0.5rem]' type='email' placeholder='Email*' value={email} onChange={event => setEmail(event.target.value)} required></input>
+            <input className='w-[90%] p-[1rem] border border-black m-[0.5rem]' type='tel' placeholder='Telefone' value={telefone} onChange={event => setTelefone(event.target.value)}></input>
+            <textarea className='resize-none w-[90%] p-[1rem] border border-black m-[0.5rem]' placeholder='Observação' value={mensagem} onChange={event => setMensagem(event.target.value)}></textarea>
             <button className='mb-6 mt-10zzzzzz rounded-lg font-bold px-2 py-1 border border-6 w-60 bg-lime-300 cursor-pointer hover:bg-lime-600' type='submit'>Salvar</button>
         </form>
         <div className='w-[500px] p-[1rem] bg-teal-400 h-[400px] text-center ml-[5rem] overflow-auto'>
