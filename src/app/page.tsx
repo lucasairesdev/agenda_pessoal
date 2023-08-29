@@ -1,9 +1,6 @@
 "use client";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { database } from "../../services/firebase";
 import { FormEvent, useEffect, useState } from "react";
-import { data } from "autoprefixer";
+import { database } from "../../services/firebase";
 
 type Contato = {
   chave: string;
@@ -58,6 +55,10 @@ export default function Home() {
     setEmail("");
     setTelefone("");
     setMensagem("");
+  }
+
+  function deleteContact(ref: string){
+    const referencia = database.ref(`contatos/${ref}`).remove()
   }
 
   return (
@@ -131,7 +132,7 @@ export default function Home() {
                   <a className="m-2 text-red-600 cursor-pointer hover:font-bold">
                     Editar
                   </a>
-                  <a className="m-2 text-red-600 cursor-pointer hover:font-bold">
+                  <a className="m-2 text-red-600 cursor-pointer hover:font-bold" onClick={()=> deleteContact(contato.chave)}>
                     Excluir
                   </a>
                 </div>
