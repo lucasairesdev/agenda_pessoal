@@ -21,6 +21,8 @@ export default function Home() {
   const [buscaContato, setBuscaContato] = useState<Contato[]>();
 
   const [estadoDeBusca, setEstadoDeBusca] = useState(false);
+  const [nomeAntigo, setNomeAntigo] = useState('');
+  const [botaoAtualizar, setBotaoAtualizar] =useState(false)
 
   useEffect(() => {
     const refContatos = database.ref("contatos");
@@ -64,9 +66,7 @@ export default function Home() {
   function deleteContact(ref: string){
     const referencia = database.ref(`contatos/${ref}`).remove()
   }
-
   
-
   function buscarContato(event: FormEvent){
     const palavra = event.target.value
     if(palavra.length > 0){
@@ -86,6 +86,35 @@ export default function Home() {
     }
   }
 
+  function editarDados(contatos : Contato){
+    setBotaoAtualizar(true)
+    setNomeAntigo(contatos.chave)
+    setNome(contatos.nome)
+    setEmail(contatos.email)
+    setTelefone(contatos.telefone)
+    setMensagem(contatos.mensagem)
+  }
+
+  function atualizaContato(){
+    const ref = database.ref('contatos')
+
+    const dados ={
+      'nome'     : nome,
+      'email'    : email,
+      'telefone' : telefone,
+      'mensagem' : mensagem
+    } 
+
+    ref.child(nomeAntigo).update(dados);
+
+    setNome("");
+    setEmail("");
+    setTelefone("");
+    setMensagem("");
+
+    setBotaoAtualizar(false);
+  }
+
   return (
     <>
       <div className="absolute ml-72 mt-24">
@@ -97,7 +126,6 @@ export default function Home() {
       </div>
       <div className="flex justify-center items-center h-[100vh]">
         <form
-          onSubmit={recordInputs}
           className="w-[560px] mr-[1rem] text-center"
         >
           <input
@@ -130,12 +158,12 @@ export default function Home() {
             value={mensagem}
             onChange={(event) => setMensagem(event.target.value)}
           ></textarea>
-          <button
-            className="mb-6 mt-10zzzzzz rounded-lg font-bold px-2 py-1 border border-6 w-60 bg-lime-300 cursor-pointer hover:bg-lime-600"
-            type="submit"
-          >
-            Salvar
-          </button>
+
+          {botaoAtualizar?
+            <button className="mb-6 mt-10zzzzzz rounded-lg font-bold px-2 py-1 border border-6 w-60 bg-lime-300 cursor-pointer hover:bg-lime-600" type="button" onClick={atualizaContato}>Atualizar</button>   
+           :  
+          <button className="mb-6 mt-10zzzzzz rounded-lg font-bold px-2 py-1 border border-6 w-60 bg-lime-300 cursor-pointer hover:bg-lime-600" type="button" onClick={recordInputs}>Salvar</button>
+          }
         </form>
         <div className="w-[500px] p-[1rem] bg-teal-400 h-[400px] text-center ml-[5rem] overflow-auto">
           <input
@@ -157,7 +185,7 @@ export default function Home() {
                     {contato.nome}
                   </p>
                   <div>
-                    <a className="m-2 text-red-600 cursor-pointer hover:font-bold">
+                    <a className="m-2 text-red-600 cursor-pointer hover:font-bold" onClick={() => editarDados(contato)}>
                       Editar
                     </a>
                     <a className="m-2 text-red-600 cursor-pointer hover:font-bold" onClick={()=> deleteContact(contato.chave)}>
@@ -183,7 +211,7 @@ export default function Home() {
                   {contato.nome}
                 </p>
                 <div>
-                  <a className="m-2 text-red-600 cursor-pointer hover:font-bold">
+                  <a className="m-2 text-red-600 cursor-pointer hover:font-bold" onClick={()=> editarDados(contato)}>
                     Editar
                   </a>
                   <a className="m-2 text-red-600 cursor-pointer hover:font-bold" onClick={()=> deleteContact(contato.chave)}>
