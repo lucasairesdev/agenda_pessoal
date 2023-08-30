@@ -18,6 +18,10 @@ export default function Home() {
 
   const [contatos, setContatos] = useState<Contato[]>();
 
+  const [buscaContato, setBuscaContato] = useState<Contato[]>();
+
+  const [estadoDeBusca, setEstadoDeBusca] = useState(false);
+
   useEffect(() => {
     const refContatos = database.ref("contatos");
 
@@ -59,6 +63,27 @@ export default function Home() {
 
   function deleteContact(ref: string){
     const referencia = database.ref(`contatos/${ref}`).remove()
+  }
+
+  
+
+  function buscarContato(event: FormEvent){
+    const palavra = event.target.value
+    if(palavra.length > 0){
+      setEstadoDeBusca(true)
+
+    const dados = new Array;
+
+    contatos?.map(contato =>{
+      const regra = new RegExp(event.target.value, 'gi')
+      if(regra.test(contato.nome)){
+        dados.push(contato)
+      }
+    })
+    setBuscaContato(dados)
+    }else{
+      setEstadoDeBusca(false);
+    }
   }
 
   return (
@@ -117,9 +142,38 @@ export default function Home() {
             className="w-[458px] h-[40px] p-[1rem] border border-1 m-[0.4rem] rounded-lg text-center"
             type="text"
             placeholder="Buscar"
+            onChange={buscarContato}
           ></input>
 
-          {contatos?.map((contato) => (
+          {estadoDeBusca ? 
+            buscaContato?.map(contato => {
+              return(
+              <div
+                className="bg-teal-200 rounded-lg text-left max-h-[200px] box-content"
+                key={contato.chave}
+              >
+                <div className="flex justify-between items-center">
+                  <p className="text-[1.5rem] text-left p-[0.1rem] font-bold m-2">
+                    {contato.nome}
+                  </p>
+                  <div>
+                    <a className="m-2 text-red-600 cursor-pointer hover:font-bold">
+                      Editar
+                    </a>
+                    <a className="m-2 text-red-600 cursor-pointer hover:font-bold" onClick={()=> deleteContact(contato.chave)}>
+                      Excluir
+                    </a>
+                  </div>
+                </div>
+                <div className="p-2">
+                  <p>{contato.email}</p>
+                  <p>{contato.telefone}</p>
+                  <p>{contato.mensagem}</p>
+                </div>
+              </div>
+              ) 
+          }) :  contatos?.map(contato => {
+            return(
             <div
               className="bg-teal-200 rounded-lg text-left max-h-[200px] box-content"
               key={contato.chave}
@@ -143,7 +197,9 @@ export default function Home() {
                 <p>{contato.mensagem}</p>
               </div>
             </div>
-          ))}
+            ) 
+        }) 
+      }
         </div>
       </div>
     </>
